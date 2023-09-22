@@ -31,9 +31,14 @@ const Navbar = () => {
           </a>
           <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
             <a className="mr-5 hover:text-gray-900">Home</a>
-            <a className="mr-5 hover:text-gray-900">About</a>
             <a className="mr-5 hover:text-gray-900">Course</a>
-            <a className="mr-5 hover:text-gray-900">Contact us</a>
+            <Link to="/about" className="mr-5 hover:text-gray-900">
+              About
+            </Link>
+            <a className="mr-5 hover:text-gray-900">Course</a>
+            <Link to="/contact" className="mr-5 hover:text-gray-900">
+            Contact us
+            </Link>
           </nav>
           {isTokenAvailable ? (
             // Render Logout button if token exists
