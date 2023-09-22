@@ -1,6 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 const Login = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+    try {
+      // Make a POST request to your backend API (update the URL accordingly)
+      const response = await axios.post(
+        "http://localhost:5000/api/v1/user/login",
+        formData
+      );
+
+      // Check if the response contains a token (assuming the token is returned by the server)
+      if (response.data.token) {
+        // Save the token to localStorage
+        localStorage.setItem("token", response.data.token);
+        console.log(response.data.User.name);
+        localStorage.setItem("name", response.data.User.name);
+        // Redirect to http://localhost:3000
+        window.location.href = "http://localhost:3000";
+      } else {
+        // Handle the case where the server didn't return a token
+        console.error("Login failed: Token not found in response");
+      }
+
+      // Reset the form fields
+      setFormData({
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      // Handle any errors (e.g., show an error message)
+      console.error("Login failed:", error);
+    }
+  };
+
   return (
     <div>
       <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -15,7 +63,7 @@ const Login = () => {
           </h2>
         </div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="email"
@@ -29,7 +77,9 @@ const Login = () => {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  required=""
+                  required
+                  value={formData.email} // Bind the value to the state
+                  onChange={handleChange} // Handle input changes
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -57,7 +107,9 @@ const Login = () => {
                   name="password"
                   type="password"
                   autoComplete="current-password"
-                  required=""
+                  required
+                  value={formData.password} // Bind the value to the state
+                  onChange={handleChange} // Handle input changes
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
